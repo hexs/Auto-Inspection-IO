@@ -208,7 +208,22 @@ if __name__ == '__main__':
                 printt = f'{datetime.now()} run={txt} run_step={run_step}'
                 print(printt)
                 with open("/home/pi/autorun/static/step.txt", 'w') as f:
-                    print(run_step)
+                    print(run_step,type(run_step))
+                    step_text = [
+                'step 0',
+                'ต้องไม่มีอะไรขวาง Infrared Senser 0 and 1 เพื่อจะให้ stoper 1 ลงมากั้น',
+                'รอ PCB เข้ามา',
+                'หน่วงเวลา รอให้กล้องถ่ายภาพ',
+                'บอกให้ computer predict',
+                'รออ่านผลลัพธ์ จากการ predict',
+                'ปล่อย PCB โดย การยก Stopper_1 ขึ้น',
+                'หน่วงเวลา รอยก Stopper_2 ขึ้น',
+                'step 8',
+                'step 9',
+                'NG',
+                'retry or bypass',
+            ]
+                    print(step_text)
                     print(step_text[run_step])
                     print(f'{printt}\n{step_text[run_step]}')
                     f.write(f'{printt}\n{step_text[run_step]}')
@@ -233,3 +248,8 @@ if __name__ == '__main__':
         # # with open("/home/pi/autorun/static/log.txt", 'a') as f:
         # # f.write(f'{datetime.now()}\n{e}\n\n')
         # time.sleep(3)
+Traceback (most recent call last):
+  File "/home/pi/autorun/io_rasp.py", line 226, in <module>
+    print(step_text)
+UnicodeEncodeError: 'latin-1' codec can't encode characters in position 12-28: ordinal not in range(256)
+
