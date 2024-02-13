@@ -4,17 +4,19 @@ import json
 import time
 
 GPIO.setmode(GPIO.BCM)
+
+
 class ButtonAndLamp:
-    def __init__(self,pin):
+    def __init__(self, pin):
         self.pin = pin
         self.status_sw = 0
         self.status_lamp = 0
+
     def update(self):
         GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         self.status_sw = GPIO.input(self.pin)
         GPIO.setup(self.pin, GPIO.OUT)
         GPIO.output(self.pin, self.status_lamp)
-        
 
 
 datetime_old = datetime.now()
@@ -54,8 +56,6 @@ for k, v in O.items():
     GPIO.setup(v, GPIO.OUT)
 
 
-
-
 def on(pin):
     if not pin.isnumeric():
         pin = O.get(pin)
@@ -83,6 +83,7 @@ def read(pinstr):
     print(f'func >> {pinstr} is {res}')
     return res
 
+
 def readall():
     data = {}
     for name, pin in IO.items():
@@ -90,7 +91,6 @@ def readall():
         data[name] = [pin, res]
     print(f'func >> readall == {data}')
     return data
-
 
 
 def main_program():
@@ -115,7 +115,7 @@ def main_program():
             # sen1 เจอ --> ___ ### ถ้าเจอ pcb มา delay รอถ่ายภาพ
             run_step = 3
             datetime_old = datetime.now()
-            
+
     elif run_step == 3:
         if (datetime.now() - datetime_old).total_seconds() > 4:
             # หน่วงเวลา รอให้กล้องถ่ายภาพ
@@ -131,8 +131,8 @@ def main_program():
         # อ่านผลลัพธ์
         with open('/home/pi/autorun/static/data.txt') as f:
             res = f.read()
-            print("res",res)
-            
+            print("res", res)
+
         if res == 'ok':
             run_step = 6
         if res == 'ng':
@@ -144,10 +144,10 @@ def main_program():
         off('Stopper_1')
         run_step = 7
         datetime_old = datetime.now()
-    
+
     elif run_step == 7:
         # หน่วงเวลา
-        if (datetime.now() - datetime_old).total_seconds() > 2 :
+        if (datetime.now() - datetime_old).total_seconds() > 2:
             off('Stopper_2')
             run_step = 8
     elif run_step == 8:
@@ -160,17 +160,17 @@ def main_program():
         run_step = 11
         datetime_old = datetime.now()
 
-    elif run_step == 11 and (datetime.now() - datetime_old).total_seconds() > 2 :
+    elif run_step == 11 and (datetime.now() - datetime_old).total_seconds() > 2:
         if re_b.status_sw == 0:
-            run_step = 4 # reset
+            run_step = 4  # reset
             re_b.status_lamp = 0
             ok_b.status_lamp = 0
         if ok_b.status_sw == 0:
-            run_step = 6 # bypass
+            run_step = 6  # bypass
             re_b.status_lamp = 0
             ok_b.status_lamp = 0
-    
-    if run_step == 11: #ng
+
+    if run_step == 11:  # ng
         on('buzzer')
     else:
         off('buzzer')
@@ -178,30 +178,30 @@ def main_program():
 
 if __name__ == '__main__':
     # while True:
-        # try:
+    # try:
     if True:
         if True:
-		
-            with open("/home/pi/autorun/static/log.txt", 'a' ,encoding='utf-8') as f:
+
+            with open("/home/pi/autorun/static/log.txt", 'a', encoding='utf-8') as f:
                 f.write(f'{datetime.now()} run io\n\n')
             old_txt = '0'
             txt = '0'
             step_text = [
-            'step 0',
-            'ต้องไม่มีอะไรขวาง Infrared Senser 0 and 1 เพื่อจะให้ stoper 1 ลงมากั้น',
-            'รอ PCB เข้ามา',
-            'หน่วงเวลา รอให้กล้องถ่ายภาพ',
-            'บอกให้ computer predict',
-            'รออ่านผลลัพธ์ จากการ predict',
-            'ปล่อย PCB โดย การยก Stopper_1 ขึ้น',
-            'หน่วงเวลา รอยก Stopper_2 ขึ้น',
-            'step 8',
-            'step 9',
-            'NG',
-            'retry or bypass',
+                'step 0',
+                'ต้องไม่มีอะไรขวาง Infrared Senser 0 and 1 เพื่อจะให้ stoper 1 ลงมากั้น',
+                'รอ PCB เข้ามา',
+                'หน่วงเวลา รอให้กล้องถ่ายภาพ',
+                'บอกให้ computer predict',
+                'รออ่านผลลัพธ์ จากการ predict',
+                'ปล่อย PCB โดย การยก Stopper_1 ขึ้น',
+                'หน่วงเวลา รอยก Stopper_2 ขึ้น',
+                'step 8',
+                'step 9',
+                'NG',
+                'retry or bypass',
             ]
             while True:
-                
+
                 with open('/home/pi/autorun/static/run.txt') as f:
                     old_txt = txt
                     txt = f.read()
@@ -210,28 +210,25 @@ if __name__ == '__main__':
                 with open("/home/pi/autorun/static/step.txt", 'w') as f:
                     print(run_step)
                     print(f'{printt}\n{step_text[run_step]}')
-				    f.write(f'{printt}\n{step_text[run_step]}')
-                if old_txt == '0' and txt == '1': # สั่งrun
+                    f.write(f'{printt}\n{step_text[run_step]}')
+                if old_txt == '0' and txt == '1':  # สั่งrun
                     run_step = 1
-                    
-                elif old_txt == '1' and txt == '0': # สั่งหยุด
+
+                elif old_txt == '1' and txt == '0':  # สั่งหยุด
                     off('Stopper_1')
                     off('Stopper_2')
-                    
+
                 elif txt == '0':
                     off('Stopper_1')
                     off('Stopper_2')
-                
+
                 elif txt == '1':
                     main_program()
-             
+
                 time.sleep(0.1)
 
         # except:        
         # # except Exception as e:
-            # # with open("/home/pi/autorun/static/log.txt", 'a') as f:
-                # # f.write(f'{datetime.now()}\n{e}\n\n')
-            # time.sleep(3)
-        
-        
-        
+        # # with open("/home/pi/autorun/static/log.txt", 'a') as f:
+        # # f.write(f'{datetime.now()}\n{e}\n\n')
+        # time.sleep(3)
