@@ -209,6 +209,7 @@ if __name__ == '__main__':
                 print(printt)
                 with open("/home/pi/autorun/static/step.txt", 'w') as f:
                     print(run_step)
+                    print(step_text[run_step])
                     print(f'{printt}\n{step_text[run_step]}')
                     f.write(f'{printt}\n{step_text[run_step]}')
                 if old_txt == '0' and txt == '1':  # สั่งrun
